@@ -8,7 +8,8 @@ import {
   Play, 
   Pause, 
   ArrowRight, 
-  ArrowLeft 
+  ArrowLeft,
+  Phone
 } from 'lucide-react';
 import { 
   FadeInUp, 
@@ -267,6 +268,31 @@ export default function HomePage() {
               </p>
             </StaggerItem>
           ))}
+
+          {/* Contact Us Highlight Button with Phone Icon */}
+          <StaggerItem className="flex flex-col items-center text-center group cursor-pointer w-[92px] sm:w-[130px]">
+            <div 
+              onClick={() => navigate('/contact')}
+              className="relative mb-2 transition-transform group-hover:scale-105 active:scale-95"
+            >
+              <div className="w-16 h-16 sm:w-22 sm:h-22 rounded-full overflow-hidden border border-[#d6c4a5] group-hover:border-[#ba8a24] transition-all p-0.5 sm:p-1 bg-[#f5ede0] flex items-center justify-center">
+                <div className="w-full h-full rounded-full bg-[#ede3d2] flex items-center justify-center">
+                  <Phone className="w-6 h-6 sm:w-8 sm:h-8 text-[#ba8a24] group-hover:scale-110 transition-transform" />
+                </div>
+              </div>
+            </div>
+
+            <h3 
+              onClick={() => navigate('/contact')}
+              className="font-serif font-bold text-xs sm:text-sm text-stone-900 mt-0.5 hover:text-[#ba8a24] transition-colors"
+            >
+              {lang === 'ar' ? 'اتصل بنا' : 'Contact Us'}
+            </h3>
+
+            <p className="text-[10px] sm:text-[11px] text-stone-500 leading-tight mt-0.5 font-light line-clamp-2">
+              {lang === 'ar' ? 'تواصل معنا مباشرة' : 'Get in touch with us'}
+            </p>
+          </StaggerItem>
         </StaggerContainer>
 
         {/* ===================== FOLDED LUXURY PAPER MENU PREVIEW ===================== */}
