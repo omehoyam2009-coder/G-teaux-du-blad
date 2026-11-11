@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Amiri', 'Playfair Display', Georgia, serif;
+  --font-serif: 'Amiri', 'Playfair Display', Georgia, serif;
+}
+
+@layer base {
+  :root {
+    --theme-bg: #f7f1e7;
+    --theme-card: #f5ede0;
+    --theme-card-inner: #ede3d2;
+    --theme-border: #d6c4a5;
+    --theme-accent: #ba8a24;
+    --theme-text: #1c1917;
+    --theme-btn-bg: #1c1917;
+    --theme-btn-text: #f5ede0;
+    --color-gold-50: #fbf7ee;
+    --color-gold-100: #f5eccf;
+    --color-gold-200: #ecd79b;
+    --color-gold-300: #dfbe62;
+    --color-gold-400: #d4a536;
+    --color-gold-500: #ba8a24;
+    --color-gold-600: #9f6c1c;
+    --color-gold-700: #7b4f1b;
+  }
+
+  html,
+  body,
+  button,
+  input,
+  optgroup,
+  select,
+  textarea,
+  h1, h2, h3, h4, h5, h6,
+  p, span, a, div, label,
+  [dir="rtl"],
+  [dir="ltr"],
+  .font-sans,
+  .font-serif {
+    font-family: 'Amiri', 'Playfair Display', Georgia, serif !important;
+  }
+
+  body {
+    overflow-x: hidden;
+    background-color: var(--theme-bg, #f7f1e7);
+    color: var(--theme-text, #1c1917);
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Optimize touch targets and responsiveness on mobile */
+  button, a, input, select, textarea {
+    touch-action: manipulation;
+  }
+
+  /* Reset all global box shadows to keep site completely flat & minimal */
+  *, ::before, ::after {
+    --tw-shadow: 0 0 #0000 !important;
+    --tw-shadow-colored: 0 0 #0000 !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f5ede0;
+}
+::-webkit-scrollbar-thumb {
+  background: #d6c4a5;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-accent, #ba8a24);
+}
+
+/* Dynamic theme overrides so changing theme in Admin immediately restyles all cards, borders, and buttons */
+.bg-\[\#f5ede0\] {
+  background-color: var(--theme-card, #f5ede0) !important;
+}
+.bg-\[\#ede3d2\] {
+  background-color: var(--theme-card-inner, #ede3d2) !important;
+}
+.border-\[\#d6c4a5\] {
+  border-color: var(--theme-border, #d6c4a5) !important;
+}
+.text-\[\#ba8a24\] {
+  color: var(--theme-accent, #ba8a24) !important;
+}
+.border-\[\#ba8a24\] {
+  border-color: var(--theme-accent, #ba8a24) !important;
+}
+.bg-\[\#ba8a24\] {
+  background-color: var(--theme-accent, #ba8a24) !important;
+}
+.bg-stone-900 {
+  background-color: var(--theme-btn-bg, #1c1917) !important;
+}
+.text-\[\#f5ede0\] {
+  color: var(--theme-btn-text, #f5ede0) !important;
+}
