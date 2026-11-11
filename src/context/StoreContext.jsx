@@ -13,8 +13,8 @@ export function StoreProvider({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 1. Language
-  const [lang, setLang] = useState(() => localStorage.getItem(LANG_STORAGE_KEY) || 'ar');
+  // 1. Language - Default is English ('en')
+  const [lang, setLang] = useState(() => localStorage.getItem(LANG_STORAGE_KEY) || 'en');
   useEffect(() => {
     localStorage.setItem(LANG_STORAGE_KEY, lang);
     document.documentElement.lang = lang;
@@ -30,13 +30,16 @@ export function StoreProvider({ children }) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // 3. Store Data (Synced with SQLite Backend)
+  // 3. Store Data (Synced with SQLite Backend, Immediate Updates & No Cache)
   const [storeData, setStoreData] = useState(DEFAULT_STORE_DATA);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const fetchStoreData = useCallback(async () => {
     try {
-      const res = await fetch('/api/store-data');
+      const res = await fetch(`/api/store-data?_t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
+      });
       if (res.ok) {
         const data = await res.json();
         setStoreData(data);
@@ -49,6 +52,16 @@ export function StoreProvider({ children }) {
 
   useEffect(() => {
     fetchStoreData();
+
+    // Auto-sync on window focus & every 15s so edits reflect instantly across devices
+    const onFocus = () => fetchStoreData();
+    window.addEventListener('focus', onFocus);
+    const interval = setInterval(fetchStoreData, 15000);
+
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      clearInterval(interval);
+    };
   }, [fetchStoreData]);
 
   // Apply dynamic theme colors to root documentElement
@@ -74,6 +87,7 @@ export function StoreProvider({ children }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newData),
       });
+      await fetchStoreData();
     } catch (err) {
       console.error('Failed to sync store data with SQLite:', err);
     }

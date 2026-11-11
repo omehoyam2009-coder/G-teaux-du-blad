@@ -108,6 +108,9 @@ initializeDefaults();
 
 // 1. Get full store data
 app.get('/api/store-data', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
   try {
     const rows = db.prepare('SELECT key, value FROM store_settings').all();
     const settings = {};

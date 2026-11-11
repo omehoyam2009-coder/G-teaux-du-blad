@@ -284,13 +284,32 @@ export default function AdminPage() {
       const videoUrl = await uploadVideoFile(file);
       const updated = {
         ...draft,
-        hero: { ...draft.hero, videoUrl }
+        hero: { ...draft.hero, videoUrl, mediaType: 'video' }
       };
       setDraft(updated);
+      updateStoreData(updated);
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
       alert(lang === 'ar' ? 'فشل تحميل الفيديو' : 'Video upload failed');
+    }
+  };
+
+  const handleHeroImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const imageUrl = await uploadImageFile(file);
+      const updated = {
+        ...draft,
+        hero: { ...draft.hero, imageUrl, mediaType: 'image' }
+      };
+      setDraft(updated);
+      updateStoreData(updated);
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (err) {
+      alert(lang === 'ar' ? 'فشل تحميل صورة الهيرو' : 'Hero image upload failed');
     }
   };
 
@@ -1749,34 +1768,132 @@ export default function AdminPage() {
               </VintageCard>
             )}
 
-            {/* HERO VIDEO UPLOAD */}
+            {/* HERO MEDIA: VIDEO OR IMAGE CHOICE */}
             {activeTab === 'hero' && (
-              <VintageCard innerClassName="p-6 sm:p-8 space-y-4 max-w-2xl">
-                <h3 className="font-serif font-bold text-base text-stone-900">{t.tabHero}</h3>
-                <p className="text-xs text-stone-500 font-light">
-                  {lang === 'ar' ? 'ارفع فيديو من جهازك مباشرة ليعمل في الواجهة الترحيبية' : 'Upload video file from your device'}
-                </p>
-
-                <label className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-stone-900 text-[#f5ede0] text-xs font-bold hover:bg-stone-800 transition-colors cursor-pointer active:scale-95">
-                  <Upload className="w-3.5 h-3.5 text-[#ba8a24]" />
-                  <span>{lang === 'ar' ? 'رفع فيديو من جهازك (MP4 / WebM)' : 'Upload Video File From Device'}</span>
-                  <input type="file" accept="video/*" onChange={handleHeroVideoUpload} className="hidden" />
-                </label>
-
-                <div className="text-[11px] text-stone-500 pt-2">{t.orEnterUrl}</div>
-                <input
-                  type="text"
-                  value={draft.hero?.videoUrl || ''}
-                  onChange={(e) => setDraft({
-                    ...draft,
-                    hero: { ...draft.hero, videoUrl: e.target.value }
-                  })}
-                  className="w-full px-4 py-2 rounded-full border border-[#d6c4a5] bg-[#f5ede0] text-xs font-mono"
-                />
-
-                <div className="aspect-video max-w-md rounded-2xl overflow-hidden border border-[#d6c4a5] bg-black mt-2">
-                  <video src={draft.hero?.videoUrl} controls className="w-full h-full object-cover" />
+              <VintageCard innerClassName="p-6 sm:p-8 space-y-6 max-w-2xl">
+                <div>
+                  <h3 className="font-serif font-bold text-base text-stone-900">
+                    {lang === 'ar' ? 'وسائط الواجهة الترحيبية (فيديو أو صورة)' : 'Hero Welcome Media (Video or Image)'}
+                  </h3>
+                  <p className="text-xs text-stone-500 font-light mt-1">
+                    {lang === 'ar' 
+                      ? 'اختر ما إذا كنت ترغب في عرض فيديو ترحيبي أو صورة بانر خلفية في الواجهة.' 
+                      : 'Choose whether to display a background video or a banner image in the hero section.'}
+                  </p>
                 </div>
+
+                {/* Media Type Toggle Selector */}
+                <div className="flex items-center gap-3 p-1.5 rounded-full border border-[#d6c4a5] bg-[#ede3d2] w-fit">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = {
+                        ...draft,
+                        hero: { ...(draft.hero || {}), mediaType: 'video' }
+                      };
+                      setDraft(updated);
+                      updateStoreData(updated);
+                    }}
+                    className={`px-5 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                      (draft.hero?.mediaType || 'video') === 'video'
+                        ? 'bg-stone-900 text-[#f5ede0] shadow-sm'
+                        : 'text-stone-700 hover:text-stone-950'
+                    }`}
+                  >
+                    🎥 {lang === 'ar' ? 'فيديو ترحيبي (Video)' : 'Background Video'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = {
+                        ...draft,
+                        hero: { ...(draft.hero || {}), mediaType: 'image' }
+                      };
+                      setDraft(updated);
+                      updateStoreData(updated);
+                    }}
+                    className={`px-5 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                      draft.hero?.mediaType === 'image'
+                        ? 'bg-stone-900 text-[#f5ede0] shadow-sm'
+                        : 'text-stone-700 hover:text-stone-950'
+                    }`}
+                  >
+                    🖼️ {lang === 'ar' ? 'صورة بانر (Image)' : 'Banner Image'}
+                  </button>
+                </div>
+
+                {/* Video Controls */}
+                {(draft.hero?.mediaType || 'video') === 'video' ? (
+                  <div className="space-y-4 pt-2 border-t border-[#d6c4a5]">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <span className="text-xs font-bold text-stone-800">
+                        {lang === 'ar' ? 'ملف الفيديو الحالي:' : 'Current Video File:'}
+                      </span>
+                      <label className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-stone-900 text-[#f5ede0] text-xs font-bold hover:bg-stone-800 transition-colors cursor-pointer active:scale-95">
+                        <Upload className="w-3.5 h-3.5 text-[#ba8a24]" />
+                        <span>{lang === 'ar' ? 'رفع فيديو جديد من جهازك' : 'Upload Video File from Device'}</span>
+                        <input type="file" accept="video/*" onChange={handleHeroVideoUpload} className="hidden" />
+                      </label>
+                    </div>
+
+                    <div className="text-[11px] text-stone-500">{t.orEnterUrl}</div>
+                    <input
+                      type="text"
+                      placeholder="e.g. /videos/my-video.mp4"
+                      value={draft.hero?.videoUrl || ''}
+                      onChange={(e) => {
+                        const updated = {
+                          ...draft,
+                          hero: { ...(draft.hero || {}), videoUrl: e.target.value }
+                        };
+                        setDraft(updated);
+                      }}
+                      className="w-full px-4 py-2 rounded-full border border-[#d6c4a5] bg-[#f5ede0] text-xs font-mono"
+                    />
+
+                    {draft.hero?.videoUrl && (
+                      <div className="aspect-video max-w-md rounded-2xl overflow-hidden border border-[#d6c4a5] bg-black mt-2">
+                        <video src={draft.hero?.videoUrl} controls className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  /* Image Controls */
+                  <div className="space-y-4 pt-2 border-t border-[#d6c4a5]">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <span className="text-xs font-bold text-stone-800">
+                        {lang === 'ar' ? 'صورة البانر الحالية:' : 'Current Banner Image:'}
+                      </span>
+                      <label className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-stone-900 text-[#f5ede0] text-xs font-bold hover:bg-stone-800 transition-colors cursor-pointer active:scale-95">
+                        <Upload className="w-3.5 h-3.5 text-[#ba8a24]" />
+                        <span>{lang === 'ar' ? 'رفع صورة بانر من جهازك' : 'Upload Banner Image from Device'}</span>
+                        <input type="file" accept="image/*" onChange={handleHeroImageUpload} className="hidden" />
+                      </label>
+                    </div>
+
+                    <div className="text-[11px] text-stone-500">{t.orEnterUrl}</div>
+                    <input
+                      type="text"
+                      placeholder="e.g. /images/banner.jpg"
+                      value={draft.hero?.imageUrl || ''}
+                      onChange={(e) => {
+                        const updated = {
+                          ...draft,
+                          hero: { ...(draft.hero || {}), imageUrl: e.target.value }
+                        };
+                        setDraft(updated);
+                      }}
+                      className="w-full px-4 py-2 rounded-full border border-[#d6c4a5] bg-[#f5ede0] text-xs font-mono"
+                    />
+
+                    {draft.hero?.imageUrl && (
+                      <div className="aspect-video max-w-md rounded-2xl overflow-hidden border border-[#d6c4a5] bg-stone-900 mt-2">
+                        <img src={draft.hero?.imageUrl} alt="Hero Banner" className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                  </div>
+                )}
               </VintageCard>
             )}
 

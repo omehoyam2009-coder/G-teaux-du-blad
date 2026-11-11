@@ -14,13 +14,15 @@ export const DEFAULT_STORE_DATA = {
     buttonText: "#f5ede0",
   },
   hero: {
+    mediaType: "video", // "video" | "image"
+    imageUrl: "/images/banner.jpg",
+    videoUrl: "/videos/gateaux-welcome.mp4",
+    videoPoster: "/images/banner.jpg",
     logoUrl: "/images/logo.png",
     titleEn: "Gâteaux du blad",
     titleAr: "حلويات البلاد",
     subtitleEn: "Pâtisserie Algérienne Artisanale • Philadelphia, PA",
     subtitleAr: "حلويات جزائرية تقليدية أصيلة • فيلادلفيا، بنسيلفانيا",
-    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-baker-kneading-dough-42999-large.mp4",
-    videoPoster: "/images/banner.jpg",
     searchPlaceholderEn: "Search baklawa, makroudh, tcharek, assorted boxes...",
     searchPlaceholderAr: "ابحث في القائمة: بقلاوة، مقروط، تشاراك، علب...",
   },

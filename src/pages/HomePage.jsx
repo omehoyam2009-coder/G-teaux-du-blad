@@ -81,18 +81,31 @@ export default function HomePage() {
       {/* ===================== HERO SECTION ===================== */}
       <section className="relative w-full h-[76vh] sm:h-[88vh] min-h-[480px] overflow-hidden bg-black flex flex-col justify-between">
         
-        {/* Background Welcome Video */}
-        <div className="absolute inset-0 z-0">
-          <video
-            ref={videoRef}
-            src={storeData.hero.videoUrl}
-            poster={storeData.hero.videoPoster || '/images/C1.jpg'}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover"
-          />
+        {/* Background Welcome Media (Video or Image chosen by Admin, No hardcoded default banner) */}
+        <div className="absolute inset-0 z-0 bg-stone-950">
+          {storeData.hero?.mediaType === 'image' ? (
+            storeData.hero?.imageUrl ? (
+              <img
+                src={storeData.hero.imageUrl}
+                alt="Hero Banner"
+                className="w-full h-full object-cover"
+              />
+            ) : null
+          ) : (
+            storeData.hero?.videoUrl ? (
+              <video
+                ref={videoRef}
+                src={storeData.hero.videoUrl}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover"
+              />
+            ) : null
+          )}
+          {/* Subtle dark gradient overlay so Logo and Brand Name stand out with high contrast */}
+          <div className="absolute inset-0 bg-black/40 pointer-events-none" />
         </div>
 
         {/* TOP: Search Bar - Beige Background with Border (No Liquid Glass) */}
